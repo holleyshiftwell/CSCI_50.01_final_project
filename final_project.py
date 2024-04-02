@@ -1,16 +1,29 @@
+# initialize dictionaries
 arrival_time = {}
 turnaround_time = {}
-process_count = int(input("How many processes would you like to simulate?\n"))
+
+
+# asks for process count
+process_count = int(input("How many processes would you like to simulate?\n")) 
+
+
+# populates 'arrival_time' dictionary
 a_t = list(input("Indicate the arrival time of each process \
 (please separate each arrival time with a space\n)").split(" "))
-for i in range(process_count): # populates 'arrival_time' dictionary
+for i in range(process_count): 
     arrival_time[i] = a_t[i]
 
-t_t = list(input("Indicate the the turnaround time of each process.\n"))
+
+# populates 'turnaround_time' dictionary
+t_t = list(input("Indicate the the turnaround time of each process.\
+(please separate each turnaround time with a space\n)").split(" "))
+for i in range(process_count): 
+    turnaround_time[i] = t_t[i]
 
 
-3. Asks the user to indicate the the turnaround time of each process
-4. Asks the user which scheduling algorithm they would like to simulate (the choices are SJF
-Preemptive and Round Robin (if Round Robin is chosen, the user is asked for the time
-quantum) )
-5. Computes and returns the Average Waiting Time to the user
+# asks for scheduling algorithm
+scheduling_algo = input("What scheduling algorithm would you like to simulate? \
+(type 'SJF' or 'Round Robin')\n")
+if scheduling_algo == "Round Robin":
+    time_quantum = input("What is the time quantum?\n")
+
