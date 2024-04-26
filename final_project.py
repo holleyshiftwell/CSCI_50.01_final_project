@@ -1,98 +1,116 @@
-# initialize dictionaries
-arrival_time = {}
-turnaround_time = {}
+def sjf_non_preemptive(processes, n):
+    processes.sort(key=lambda x: x[1])  # Sort processes by arrival time
+    waiting_time = 0
+    total_waiting_time = 0
+    for i in range(n):
+        total_waiting_time += waiting_time
+        waiting_time += processes[i][2]  # Update waiting time for next process
+    average_waiting_time = total_waiting_time / n
+    return average_waiting_time
 
 
-# asks for process count
-process_count = int(input("How many processes would you like to simulate?\n"))
+def round_robin(processes, n, time_quantum):
+    total_waiting_time = 0
+    burst_remaining = [process[2] for process in processes]
+    current_time = 0
+    while True:
+        done = True
+        for i in range(n):
+            if burst_remaining[i] > 0:
+                done = False
+                if burst_remaining[i] > time_quantum:
+                    current_time += time_quantum
+                    burst_remaining[i] -= time_quantum
+                else:
+                    current_time += burst_remaining[i]
+                    total_waiting_time += current_time - processes[i][1] - processes[i][2]
+                    burst_remaining[i] = 0
+        if done:
+            break
+    average_waiting_time = total_waiting_time / n
+    return average_waiting_time
 
 
-# populates 'arrival_time' dictionary
-a_t = list(input("Indicate the arrival time of each process \
-(please separate each arrival time with a space\n) ").split(" "))
-for i in range(process_count):
-    arrival_time[i] = int(a_t[i])
+def main():
+    n = int(input("Enter the number of processes: "))
+    processes = []
+    for i in range(n):
+        arrival_time = int(input(f"Enter arrival time for process {i+1}: "))
+        turnaround_time = int(input(f"Enter turnaround time for process {i+1}: "))
+        processes.append((i+1, arrival_time, turnaround_time))
+    algorithm = input("Choose scheduling algorithm (SJF Non-Preemptive / Round Robin): ").lower()
+    if algorithm == "sjf non-preemptive":
+        average_waiting_time = sjf_non_preemptive(processes, n)
+        print(f"Average Waiting Time: {average_waiting_time}")
+    elif algorithm == "round robin":
+        time_quantum = int(input("Enter time quantum: "))
+        average_waiting_time = round_robin(processes, n, time_quantum)
+        print(f"Average Waiting Time: {average_waiting_time}")
+    else:
+        print("Invalid scheduling algorithm choice.")
 
 
-# populates 'turnaround_time' dictionary
-t_t = list(input("Indicate the the turnaround time of each process.\
-(please separate each turnaround time with a space\n) ").split(" "))
-for i in range(process_count):
-    turnaround_time[i] = int(t_t[i])
+if __name__ == "__main__":
+    main()
 
+'''
+def sjf_non_preemptive(processes, n):
+    # Define a function named sjf_non_preemptive that takes a list of processes and the number of processes n as input parameters.
+    processes.sort(key=lambda x: x[1])
+    # Sort the list of processes based on the arrival time of each process.
+    waiting_time = 0
+    # Initialize the variable waiting_time to store the cumulative waiting time.
+    total_waiting_time = 0
+    # Initialize the variable total_waiting_time to store the total waiting time for all processes.
+    for i in range(n):
+        # Start a loop iterating over each process.
+        total_waiting_time += waiting_time
+        # Accumulate the total waiting time for all processes. It adds the current waiting time to the total waiting time.
+        waiting_time += processes[i][2]
+        # Update the waiting time for the next process. It adds the turnaround time of the current process to the waiting time.
+    average_waiting_time = total_waiting_time / n
+    # Calculate the average waiting time by dividing the total waiting time by the number of processes.
+    return average_waiting_time
+    # Return the calculated average waiting time from the function.
 
-# asks for scheduling algorithm
-scheduling_algo = input("What scheduling algorithm would you like to simulate?\
- (type 'SJF' or 'Round Robin')\n")
-if scheduling_algo == "Round Robin":
-    time_quantum = input("What is the time quantum?\n")
+def main():
+    # Define the main function.
+    n = int(input("Enter the number of processes: "))
+    # Prompt the user to enter the number of processes and store it in the variable n.
+    processes = []
+    # Initialize an empty list to store the processes.
+    for i in range(n):
+        # Start a loop iterating n times to input arrival time and turnaround time for each process.
+        arrival_time = int(input(f"Enter arrival time for process {i+1}: "))
+        # Prompt the user to enter the arrival time for each process and store it in the variable arrival_time.
+        turnaround_time = int(input(f"Enter turnaround time for process {i+1}: "))
+        # Prompt the user to enter the turnaround time for each process and store it in the variable turnaround_time.
+        processes.append((i+1, arrival_time, turnaround_time))
+        # Append a tuple (process_number, arrival_time, turnaround_time) to the processes list for each process.
+    algorithm = input("Choose scheduling algorithm (SJF Non-Preemptive / Round Robin): ").lower()
+    # Prompt the user to choose a scheduling algorithm and convert the input to lowercase.
+    if algorithm == "sjf non-preemptive":
+        # Check if the user chose SJF Non-Preemptive algorithm.
+        average_waiting_time = sjf_non_preemptive(processes, n)
+        # Call the sjf_non_preemptive function to calculate the average waiting time.
+        print(f"Average Waiting Time: {average_waiting_time}")
+        # Print the calculated average waiting time.
+    elif algorithm == "round robin":
+        # Check if the user chose Round Robin algorithm.
+        time_quantum = int(input("Enter time quantum: "))
+        # Prompt the user to enter the time quantum for Round Robin.
+        average_waiting_time = round_robin(processes, n, time_quantum)
+        # Call the round_robin function to calculate the average waiting time.
+        print(f"Average Waiting Time: {average_waiting_time}")
+        # Print the calculated average waiting time.
+    else:
+        # If the user choice is invalid.
+        print("Invalid scheduling algorithm choice.")
+        # Print an error message.
 
+if __name__ == "__main__":
+    # Check if the script is run directly.
+    main()
+    # Call the main function to start the program execution.
 
-# finds the process/processes with the lowest arrival time
-def lowest_AT(arrival_time):
-    lowest = 99999999
-    global indices
-    indices = []
-    # iterates through the arrival_time dictionary
-    # stores the index of the process with the lowest AT in "indices"
-    # if there are multiple processes with the same AT,
-    # append the index to "indices"
-    for i in arrival_time:
-        if arrival_time[i] < lowest:
-            lowest = arrival_time[i]
-            indices.clear()
-            indices.append(i)
-        elif arrival_time[i] == lowest:
-            indices.append(i)
-
-# creates the order at which the processes will be run
-def order(arrival_time, turnaround_time):
-    global process_order
-    process_order = []
-    # check which process has the lowest AT
-    lowest_AT(arrival_time)
-    # if multiple processes share the same AT
-    # check which process has the lowest TT
-    # append the index of the lowest AT && TT process to "process_order"
-    if len(indices) > 1:
-        lowest_TT = 99999999
-        for i in indices:
-            if turnaround_time[i] < lowest_TT:
-                lowest_TT = i
-        process_order.append(lowest_TT)
-    # else if there is a singular lowest AT,
-    # store the index of the lowest AT process to "process_order"
-    elif len(indices) == 1:
-        process_order[0] = lowest_AT[0]
-
-
-
-
-
-def SJF(process_count, arrival_time, turnaround_time):
-
-        
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# TRASH TO TREASURE?
-
-# def compare(arrival_time, turnaround_time, indices):
-#     lowest = 99999999
-
-#     for i in indices:
-#         if turnaround_time[i] < lowest:
-#             lowest = turnaround_time[i]
+'''
