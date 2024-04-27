@@ -23,3 +23,8 @@ def sjf_preemptive(processes, n):
 # total waiting time divided by the number of processes
 # return the average waiting time
 
+def round_robin(processes, n, time_quantum):
+    This function implements Round Robin scheduling. It calculates the average waiting time
+    for a given list of processes and time quantum.
+
+# Sort proces by arrival time
