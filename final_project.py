@@ -65,8 +65,8 @@ def main():
         arrival_time = int(input(f"Enter arrival time for process {i+1}: "))
         turnaround_time = int(input(f"Enter turnaround time for process {i+1}: "))
         processes.append((i+1, arrival_time, turnaround_time))
-    algorithm = input("Choose scheduling algorithm (SJF Non-Preemptive / Round Robin): ").lower()
-    if algorithm == "sjf non-preemptive":
+    algorithm = input("Choose scheduling algorithm (SJF Preemptive / Round Robin): ").lower()
+    if algorithm == "sjf preemptive":
         average_waiting_time = sjf_preemptive(processes, n)
         print(f"Average Waiting Time: {average_waiting_time}")
     elif algorithm == "round robin":
