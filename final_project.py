@@ -1,12 +1,39 @@
-def sjf_non_preemptive(processes, n):
+def sjf_preemptive(processes, n):
     processes.sort(key=lambda x: x[1])  # Sort processes by arrival time
-    waiting_time = 0
-    total_waiting_time = 0
-    for i in range(n):
-        total_waiting_time += waiting_time
-        waiting_time += processes[i][2]  # Update waiting time for next process
+    remaining_time = [process[2] for process in processes]  # Remaining burst time for each process
+    completed = 0  # Number of completed processes
+    current_time = 0  # Current time
+    total_waiting_time = 0  # Total waiting time for all processes
+
+    while completed < n:
+        shortest_index = None
+        shortest_burst = float('inf')  # Initialize shortest burst time to infinity
+
+        for i in range(n):
+            if processes[i][1] <= current_time and remaining_time[i] < shortest_burst and remaining_time[i] > 0:
+                shortest_index = i
+                shortest_burst = remaining_time[i]
+
+        if shortest_index is None:
+            current_time += 1
+            continue
+
+        # Reduce remaining burst time of the selected process
+        remaining_time[shortest_index] -= 1
+
+        # If the process has completed execution
+        if remaining_time[shortest_index] == 0:
+            completed += 1
+            end_time = current_time + 1
+            waiting_time = end_time - processes[shortest_index][1] - processes[shortest_index][2]
+            total_waiting_time += waiting_time
+
+        # Move to the next time unit
+        current_time += 1
+
     average_waiting_time = total_waiting_time / n
     return average_waiting_time
+
 
 
 def round_robin(processes, n, time_quantum):
