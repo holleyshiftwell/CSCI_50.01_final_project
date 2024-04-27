@@ -67,7 +67,7 @@ def main():
         processes.append((i+1, arrival_time, turnaround_time))
     algorithm = input("Choose scheduling algorithm (SJF Non-Preemptive / Round Robin): ").lower()
     if algorithm == "sjf non-preemptive":
-        average_waiting_time = sjf_non_preemptive(processes, n)
+        average_waiting_time = sjf_preemptive(processes, n)
         print(f"Average Waiting Time: {average_waiting_time}")
     elif algorithm == "round robin":
         time_quantum = int(input("Enter time quantum: "))
